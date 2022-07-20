@@ -1,0 +1,15 @@
+[package]
+name = "caesar_cipher"
+version = "0.1.1"
+edition = "2018"
+authors = ["yuchunzhou <yuchunzhou1990@gmail.com>"]
+keywords = ["crypto", "caesar", "cipher"]
+categories = ["cryptography", "algorithms"]
+license = "GPL-3.0"
+repository = "https://github.com/yuchunzhou/caesar"
+homepage = "https://github.com/yuchunzhou/caesar"
+description = "Caesar cipher in Rust"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
