@@ -4,12 +4,31 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let message = "helloworld".to_owned();
-        assert_eq!(decrypt(encrypt(message.clone(), 2), 2), message);
+        let message1 = "helloworld";
+        assert_eq!(
+            &decrypt(&encrypt(message1, 2).unwrap(), 2).unwrap(),
+            message1
+        );
+
+        let message2 = "你好世界";
+        assert!(encrypt(message2, 2).is_err());
+
+        let message3 = "❤️";
+        assert!(decrypt(message3, 2).is_err());
     }
 }
 
-pub fn encrypt(content: String, offset: i32) -> String {
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum CipherError {
+    #[error("non english character(s) found")]
+    CheckError,
+}
+
+type Result<T> = std::result::Result<T, CipherError>;
+
+pub fn encrypt(content: &str, offset: i32) -> Result<String> {
     let mut result = String::new();
 
     for c in content.chars() {
@@ -35,13 +54,15 @@ pub fn encrypt(content: String, offset: i32) -> String {
             } else {
                 result.push(i as u8 as char);
             }
+        } else {
+            return Err(CipherError::CheckError);
         }
     }
 
-    result
+    Ok(result)
 }
 
-pub fn decrypt(content: String, offset: i32) -> String {
+pub fn decrypt(content: &str, offset: i32) -> Result<String> {
     let mut result = String::new();
 
     for c in content.chars() {
@@ -61,8 +82,10 @@ pub fn decrypt(content: String, offset: i32) -> String {
             } else {
                 result.push(i as u8 as char);
             }
+        } else {
+            return Err(CipherError::CheckError);
         }
     }
 
-    result
+    Ok(result)
 }
