@@ -12,23 +12,25 @@ mod tests {
 
         let message2 = "你好世界";
         assert!(encrypt(message2, 2).is_err());
-
-        let message3 = "❤️";
-        assert!(decrypt(message3, 2).is_err());
     }
 }
 
+extern crate anyinput;
+extern crate thiserror;
+
+use anyinput::anyinput;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum CipherError {
     #[error("non english character(s) found")]
-    CheckError,
+    CharacterError,
 }
 
 type Result<T> = std::result::Result<T, CipherError>;
 
-pub fn encrypt(content: &str, offset: i32) -> Result<String> {
+#[anyinput]
+pub fn encrypt(content: AnyString, offset: i32) -> Result<String> {
     let mut result = String::new();
 
     for c in content.chars() {
@@ -55,14 +57,15 @@ pub fn encrypt(content: &str, offset: i32) -> Result<String> {
                 result.push(i as u8 as char);
             }
         } else {
-            return Err(CipherError::CheckError);
+            return Err(CipherError::CharacterError);
         }
     }
 
     Ok(result)
 }
 
-pub fn decrypt(content: &str, offset: i32) -> Result<String> {
+#[anyinput]
+pub fn decrypt(content: AnyString, offset: i32) -> Result<String> {
     let mut result = String::new();
 
     for c in content.chars() {
@@ -83,7 +86,7 @@ pub fn decrypt(content: &str, offset: i32) -> Result<String> {
                 result.push(i as u8 as char);
             }
         } else {
-            return Err(CipherError::CheckError);
+            return Err(CipherError::CharacterError);
         }
     }
 
